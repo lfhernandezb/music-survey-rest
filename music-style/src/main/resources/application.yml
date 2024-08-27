@@ -1,0 +1,10 @@
+# spring.application.name: musicstyle
+spring:
+  profiles:
+    active: dev
+server:
+  servlet:
+    contextPath: /api
+
+cors:
+  origin: http://localhost:4200

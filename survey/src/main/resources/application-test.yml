@@ -1,0 +1,4 @@
+# Database
+spring:
+  jpa:
+    database: HSQL
