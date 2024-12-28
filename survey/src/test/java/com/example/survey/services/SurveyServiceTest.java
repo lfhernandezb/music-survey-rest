@@ -75,6 +75,11 @@ class SurveyServiceTest {
     void tearDown() {
     }
 
+    /*
+     Antes de granbar una encuesta, irá al servicio de estilos musicales a buscar el estilo asociado. Esta
+     llamada de mockea
+     La respuesta del repositorio de encuestas se mockea para que tengamos acción ok
+     */
     @Test
     void whenSurveyIsAdded_thenControlFlowAsExpected() {
 

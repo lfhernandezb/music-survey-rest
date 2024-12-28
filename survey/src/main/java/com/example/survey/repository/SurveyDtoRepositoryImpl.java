@@ -1,6 +1,7 @@
 package com.example.survey.repository;
 
 import com.example.library.dto.SurveyDto;
+import com.example.library.exception.SurveyNotFoundException;
 import com.example.library.mapper.SurveyDtoMapper;
 import com.example.library.persistence.entity.Survey;
 import com.example.survey.persistence.crud.SurveyCrudRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Repository
@@ -43,17 +45,19 @@ public class SurveyDtoRepositoryImpl implements SurveyDtoRepository {
     }
 
     @Override
-    public SurveyDto findByCorreo(String correo) {
-        return surveyCrudRepository.findByEmail(correo).map(survey ->
-                surveyDtoMapper.toSurveyDto(survey)).orElse(null); //.orElseThrow(() -> new SurveyNotFoundException("Survey not found XXX"));
+    public Optional<SurveyDto> findByCorreo(String correo) {
+        return Optional.ofNullable(surveyCrudRepository.findByEmail(correo)
+                .map(survey ->
+                        surveyDtoMapper.toSurveyDto(survey)).orElseThrow(() -> new SurveyNotFoundException("Encuesta no encontrada para correo " + correo)));
 
     }
 
     @Override
-    public SurveyDto findById(long idEncuesta) {
-        return surveyCrudRepository.findById(idEncuesta).
-        map(survey ->
-                surveyDtoMapper.toSurveyDto(survey)).orElse(null); //orElseThrow(() -> new SurveyNotFoundException("Survey not found XXX"));
+    public Optional<SurveyDto> findById(long idEncuesta) {
+        return Optional.ofNullable(surveyCrudRepository.findById(idEncuesta)
+                .map(survey ->
+                        surveyDtoMapper.toSurveyDto(survey)).orElseThrow(() -> new SurveyNotFoundException("Encuesta no encontrada para id " + String.valueOf(idEncuesta))));
+
     }
 
     @Override

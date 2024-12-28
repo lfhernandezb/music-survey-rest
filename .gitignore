@@ -235,3 +235,10 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,macos,linux,windows,intellij,maven
 
+# LHB
+
+*.properties_
+
+old.target/
+
+

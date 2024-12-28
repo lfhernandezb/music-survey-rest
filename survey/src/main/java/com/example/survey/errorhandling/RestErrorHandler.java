@@ -1,9 +1,8 @@
 package com.example.survey.errorhandling;
 
 import com.example.library.exception.EmailAlreadyRegisteredException;
-import com.example.library.exception.EmailNotFoundException;
+import com.example.library.exception.SurveyNotFoundException;
 import com.example.library.exception.MusicStyleNotFoundException;
-import com.example.library.exception.UserNotFoundException;
 import jakarta.ws.rs.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.request.WebRequest;
 
@@ -51,43 +51,61 @@ public class RestErrorHandler { //extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
-    /*
-    @ExceptionHandler(RestClientException.class)
-    protected ResponseEntity<Object> handleRestClientException(
-            RestClientException ex,
+
+    @ExceptionHandler(ResourceAccessException.class)
+    protected ResponseEntity<Object> handleResourceAccessException(
+            ResourceAccessException ex /*,
             HttpHeaders headers,
             HttpStatus status,
-            WebRequest request) {
+            WebRequest request*/) {
 
-        logger.info("RestClientException thrown");
+        logger.info("ResourceAccessException thrown");
 
         //return buildResponseEntity(new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, builder.substring(0, builder.length() - 2), ex));
-        Map<String, Object> body = new LinkedHashMap<>();
+        //Map<String, Object> body = new LinkedHashMap<>();
         //body.put("timestamp", LocalDateTime.now());
-        body.put("error", ex.getMessage());
+        //body.put("error", ex.getMessage());
 
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(RestClientException.class)
-    protected ResponseEntity<Object> handleRestClientException(
-            HttpClientErrorException ex,
+    @ExceptionHandler(IllegalStateException.class)
+    protected ResponseEntity<Object> handleIllegalStateException(
+            IllegalStateException ex /*,
             HttpHeaders headers,
             HttpStatus status,
-            WebRequest request) {
+            WebRequest request*/) {
+
+        logger.info("IllegalStateException thrown");
+
+        //return buildResponseEntity(new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, builder.substring(0, builder.length() - 2), ex));
+        //Map<String, Object> body = new LinkedHashMap<>();
+        //body.put("timestamp", LocalDateTime.now());
+        //body.put("error", ex.getMessage());
+
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    protected ResponseEntity<Object> handleRestClientException(
+            HttpClientErrorException ex /*,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request*/) {
 
         logger.info("HttpClientErrorException thrown");
 
         //return buildResponseEntity(new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, builder.substring(0, builder.length() - 2), ex));
-        Map<String, Object> body = new LinkedHashMap<>();
+        // Map<String, Object> body = new LinkedHashMap<>();
         //body.put("timestamp", LocalDateTime.now());
-        body.put("error", ex.getMessage());
+        // body.put("error", ex.getMessage());
 
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ex.getMessage(), ex.getStatusCode());
+
     }
-    */
+
     @ExceptionHandler(NotFoundException.class)
-    protected ResponseEntity<Object> handleRestClientException(
+    protected ResponseEntity<Object> handleNotFoundException(
             NotFoundException ex,
             HttpHeaders headers,
             HttpStatus status,
@@ -117,9 +135,9 @@ public class RestErrorHandler { //extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(EmailNotFoundException.class)
+    @ExceptionHandler(SurveyNotFoundException.class)
     public ResponseEntity<Object> handleClientNotFoundException(
-            EmailNotFoundException ex, WebRequest request) {
+            SurveyNotFoundException ex, WebRequest request) {
 
         logger.info("EmailNotFoundException thrown");
 
@@ -156,6 +174,24 @@ public class RestErrorHandler { //extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(RestClientException.class)
+    protected ResponseEntity<Object> handleRestClientException(
+            RestClientException ex /*,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request*/) {
+
+        logger.info("RestClientException thrown");
+
+        //return buildResponseEntity(new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, builder.substring(0, builder.length() - 2), ex));
+        Map<String, Object> body = new LinkedHashMap<>();
+        //body.put("timestamp", LocalDateTime.now());
+        body.put("error", ex.getMessage());
+
+        return new ResponseEntity<>(ex.toString(), HttpStatus.NOT_FOUND);
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(
             Exception ex, WebRequest request) {
@@ -172,6 +208,7 @@ public class RestErrorHandler { //extends ResponseEntityExceptionHandler {
             body.put("error", ex.getMessage());
         }
         */
+
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
